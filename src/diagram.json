@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "author": "Pet Monitor",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-dht22", "id": "dht1", "top": -114.9, "left": -168.6, "attrs": {} },
+    {
+      "type": "wokwi-pir-motion-sensor",
+      "id": "pir1",
+      "top": 167.2,
+      "left": -189.78,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led1",
+      "top": 34.8,
+      "left": -188.2,
+      "attrs": { "color": "red" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led2",
+      "top": 34.8,
+      "left": -130.6,
+      "attrs": { "color": "green" }
+    },
+    {
+      "type": "wokwi-pushbutton-6mm",
+      "id": "btn1",
+      "top": 122.6,
+      "left": -124.8,
+      "attrs": { "color": "green" }
+    },
+    { "type": "wokwi-pushbutton-6mm", "id": "btn2", "top": 122.6, "left": -182.4, "attrs": {} }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "dht1:VCC", "esp:3V3", "red", [] ],
+    [ "dht1:GND", "esp:GND.1", "black", [] ],
+    [ "dht1:SDA", "esp:15", "green", [] ],
+    [ "pir1:VCC", "esp:3V3", "red", [] ],
+    [ "pir1:GND", "esp:GND.1", "black", [] ],
+    [ "pir1:OUT", "esp:27", "blue", [] ],
+    [ "led1:A", "esp:26", "red", [] ],
+    [ "led1:C", "esp:GND.1", "black", [] ],
+    [ "led2:A", "esp:25", "green", [] ],
+    [ "led2:C", "esp:GND.1", "black", [] ],
+    [ "btn1:1.l", "esp:GND.1", "black", [] ],
+    [ "btn1:2.l", "esp:18", "green", [] ],
+    [ "btn2:1.l", "esp:GND.1", "black", [] ],
+    [ "btn2:2.l", "esp:19", "green", [] ]
+  ],
+  "serialMonitor": { "display": "always" },
+  "dependencies": {}
+}
