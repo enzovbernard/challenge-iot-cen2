@@ -30,10 +30,10 @@ A cada ciclo de 24 segundos (1 dia simulado), o ESP32 analisa os dados acumulado
 * **Estresse Térmico:** Se a temperatura ambiente ultrapassar os 30.0°C, perde 15 pontos. Se cair abaixo de 15.0°C, perde 10 pontos.
 
 ### 3. Classificação e Diagnóstico
-Com base no Score final calculado, o ESP32 classifica a saúde do pet em três níveis:
-* **Score acima de 75:** Status `NORMAL` | *"Excelente! O pet esta descansado."*
-* **Score entre 50 e 75:** Status `ATENCAO` | *"Sono instavel. Monitore o ambiente e o pet."*
-* **Score abaixo de 50:** Status `CRITICO` | *"Alerta! Pet privado de sono ou muito interrompido."* (Dispara o LED Vermelho de Alerta).
+Com base no Score final calculado localmente, o ESP32 classifica a saúde do repouso do pet em três níveis e gera diagnósticos proativos contextuais:
+* **Score acima de 75:** Status NORMAL | O sistema valida o sono de qualidade e aponta se o ambiente se manteve em condições ideais ou se registrou extremos de temperatura (muito quente/frio).
+* **Score entre 50 e 75:** Status ATENCAO | O algoritmo detalha o causador da instabilidade, alertando explicitamente sobre interrupções excessivas (sono fragmentado), tempo de repouso abaixo do recomendado, sono em excesso ou variações climáticas prejudiciais.
+* **Score abaixo de 50:** Status CRITICO | Dispara o LED Vermelho de Alerta e gera avisos claros sobre cenários graves, como a combinação de privação de sono com alta agitação ou em noites onde o animal passa o ciclo inteiro quase sem conseguir dormir.
 
 ---
 
