@@ -5,8 +5,8 @@ Este projeto consiste em um ecossistema de Internet das Coisas (IoT) voltado par
 ---
 
 ## Tecnologias Utilizadas
-* **Hardware:** ESP32, Sensor de Temperatura/Umidade DHT22, Sensor de Presença PIR, Push Buttons e LEDs.
-* **Firmware:** C++ (Framework Arduino)
+* **Hardware:** ESP32, Sensor de Temperatura/Umidade DHT22, Sensor de Presença PIR, Buzzer, Push Buttons e LEDs.
+* **Código-Fonte:** C++ (Framework Arduino)
 * **Plataforma de Simulação:** [Wokwi](https://wokwi.com/)
 * **Plataforma Cloud IoT:** [Thinger.io](https://thinger.io/)
 
@@ -16,16 +16,18 @@ Este projeto consiste em um ecossistema de Internet das Coisas (IoT) voltado par
 
 O sistema opera através de um algoritmo de processamento local executado diretamente no ESP32. Para viabilizar testes rápidos, o tempo foi escalonado: **1 segundo real equivale a 1 hora simulada do pet** (1 ciclo diário completo = 24 segundos reais).
 
-### 1. Captura de Dados e Eventos
-* **Monitoramento Ambiental:** A cada 5 segundos, o ESP32 lê a temperatura e a umidade do ar através do sensor **DHT22**.
+### 1. Controle de Ciclo e Captura de Dados
+* **Início do Dia:** O ciclo de 24 segundos (24 horas simuladas) só é iniciado quando o responsável pressiona o Botão de Inicialização. Isso garante total controle para o início dos testes.
+* **Monitoramento Ambiental:** A cada 5 segundos, o ESP32 lê a temperatura e a umidade do ar através do sensor DHT22.
 * **Monitoramento de Sono:** O sistema detecta quando o pet deita ou levanta através de duas fontes: o sensor **PIR** (automação por presença) ou os **Botões Físicos** (acionamento manual pelo responsável).
+* **Interação Remota (Atuador):** Através do painel na nuvem, o usuário pode acionar um interruptor que ativa o Buzzer localmente no ESP32, servindo como um alarme sonoro para acordar o animal à distância.
 
 ### 2. Algoritmo de Cálculo do Score (Processamento Local)
 A cada ciclo de 24 segundos (1 dia simulado), o ESP32 analisa os dados acumulados e calcula uma pontuação de saúde chamada **Score de Descanso** (que inicia em 100) aplicando as seguintes penalidades:
 * **Tempo de Sono Insuficiente:** Se o pet dormiu menos de 6 horas simuladas no ciclo, perde 40 pontos. Se dormiu entre 6 e 12 horas, perde 15 pontos.
 * **Tempo de Sono Excessivo:** Se dormiu mais de 18 horas simuladas, perde 20 pontos.
-* **Sono Fragmentado (Interrompido):** Se o pet acordou 5 ou mais vezes no ciclo, perde 25 pontos. Se acordou entre 3 e 4 vezes, perde 15 pontos.
-* **Estresse Térmico:** Se a temperatura ambiente registrada pelo DHT22 ultrapassar os 30 graus, o score perde 10 pontos.
+* **Sono Fragmentado (Interrompido):** Considerando o padrão biológico dos pets, que naturalmente acordam várias vezes, o sistema foi calibrado para ser tolerante. O score só sofre penalidade de 10 pontos se o pet tiver entre 7 e 11 interrupções, e perde 20 pontos caso atinja 12 ou mais interrupções no mesmo ciclo (sinal de forte agitação, coceira excessiva ou estresse).
+* **Estresse Térmico:** Se a temperatura ambiente ultrapassar os 30.0°C, perde 15 pontos. Se cair abaixo de 15.0°C, perde 10 pontos.
 
 ### 3. Classificação e Diagnóstico
 Com base no Score final calculado, o ESP32 classifica a saúde do pet em três níveis:
@@ -39,23 +41,31 @@ Com base no Score final calculado, o ESP32 classifica a saúde do pet em três n
 
 Ao final de cada ciclo, o ESP32 transmite os resultados diretamente para o painel do Thinger.io através de 5 canais de dados independentes configurados via transmissão por dispositivo:
 
-1. `score_descanso` (Gauge) - Nota final de 0 a 100 da qualidade do repouso.
-2. `temperatura_pet` (Gauge) - Temperatura em tempo real medida no ambiente (em graus).
-3. `umidade_pet` (Gauge) - Umidade relativa do ar (%).
-4. `status_clinico` (Text/Value) - Diagnóstico em texto (`NORMAL`, `ATENCAO` ou `CRITICO`).
-5. `analise_ia` (Text/Value) - Recomendação proativa interpretada pelo algoritmo.
+1. `analise_ia` (Text) - Recomendação proativa interpretada pelo algoritmo local.
+2. `score_descanso` (Gauge) - Nota final de 0 a 100 da qualidade do repouso.
+3. `temperatura_pet` (Gauge) - Temperatura do ambiente em tempo real (°C).
+4. `umidade_pet` (Gauge) - Umidade relativa do ar (%).
+5. `total_sono` (Text) - Acumulado de horas que o pet dormiu no ciclo.
+6. `interrupcoes` (Text) - Quantidade de vezes que o animal acordou.
+7. `media_sono` (Text) - Média de duração das sessões de sono.
+8. `alarme_pet` (On/Off Switch) - Canal de controle para acionar o alarme (Buzzer) à distância.
 
 ---
 
 ## Como Executar e Testar 
 
-1. Abra a simulação do circuito no Wokwi através do link público: **https://wokwi.com/projects/464233379928396801**
-2. Clique no botão de **Play** para iniciar a execução do firmware e a conexão Wi-Fi.
-3. **Teste de Conforto:** Mantenha a temperatura estável no DHT22 e acione o sono uma única vez. Aguarde 24 segundos e veja o Thinger.io registrar Score 100 e Status NORMAL.
-4. **Teste de Risco:** Suba o slider do DHT22 para mais de 30 graus e acione o sensor PIR ou os botões múltiplas vezes simulando agitação. O sistema derrubará o Score e atualizará o dashboard para ATENÇÃO/CRÍTICO na nuvem no próximo ciclo.
+1. Abra a simulação do circuito no Wokwi através do link público: https://wokwi.com/projects/464233379928396801
+2. Clique no botão de **Play** para iniciar a execução e aguarde a conexão Wi-Fi ser estabelecida.
+3. Pressione o **Botão Azul (Iniciar)** no circuito para dar início ao monitoramento do dia simulado.
+4. **Teste do Alarme:** No painel do Thinger.io, ligue o interruptor "Acordar Pet" e verifique o acionamento sonoro imediato do Buzzer no Wokwi.
+5. **Teste de Repouso:** Interaja com o sensor PIR ou botões de deitar/levantar para simular a rotina do animal. Após 24 segundos do início do ciclo, o dia se encerra, envia os dados para os gráficos da nuvem e exibe o relatório detalhado no Terminal Serial, aguardando um novo clique no Botão Azul para o próximo dia.
 
 ---
 ## Autoria e Identificação
-* **Integrantes:** Caio Kenzo Tayra - RM562979 | Enzo Vieira Bernardini - RM563000 | Nícolas Mota Cândido - RM561857 | Natan Freitas De Moraes 
+* **Integrantes:**
+	* Caio Kenzo Tayra - RM562979
+	* Enzo Vieira Bernardini - RM563000
+	* Nícolas Mota Cândido - RM561857
+	* Natan Freitas De Moraes - RM564992
 * **Turma:** [2TDSPI]
 * **Instituição:** FIAP - 2026
