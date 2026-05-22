@@ -1,4 +1,4 @@
-# Sistema IoT de Monitoramento de Saúde e Bem-Estar Pet 
+# Sistema RestPet IoT - Monitoramento de Bem-Estar e Sono Pet
 
 Este projeto consiste em um ecossistema de Internet das Coisas (IoT) voltado para monitorar continuamente o comportamento de repouso de animais de estimação e as variáveis ambientais do local de descanso, gerando diagnósticos preventivos calculados diretamente no dispositivo.
 
@@ -61,6 +61,10 @@ Ao final de cada ciclo, o ESP32 transmite os resultados diretamente para o paine
 5. **Teste de Repouso:** Interaja com o sensor PIR ou botões de deitar/levantar para simular a rotina do animal. Após 24 segundos do início do ciclo, o dia se encerra, envia os dados para os gráficos da nuvem e exibe o relatório detalhado no Terminal Serial, aguardando um novo clique no Botão Azul para o próximo dia.
 
 ---
+
+## Vídeo Youtube
+* **Link para o vídeo:** (https://www.youtube.com/watch?v=XKFB15orzsU)
+
 ## Autoria e Identificação
 * **Integrantes:**
 	* Caio Kenzo Tayra - RM562979

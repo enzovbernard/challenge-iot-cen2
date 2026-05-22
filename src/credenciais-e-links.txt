@@ -1,0 +1,10 @@
+DEVICE_CREDENTIAL Thinger.io: MonitorESP32@
+
+login thinger caso precise:
+conta: enzobernardini
+senha: EnzoRM563000@
+
+LINKS:
+
+link video youtube: https://youtu.be/XKFB15orzsU
+link repositório GitHub: https://github.com/enzovbernard/challenge-iot-cen2

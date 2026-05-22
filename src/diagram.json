@@ -33,7 +33,15 @@
       "left": -124.8,
       "attrs": { "color": "green" }
     },
-    { "type": "wokwi-pushbutton-6mm", "id": "btn2", "top": 122.6, "left": -182.4, "attrs": {} }
+    { "type": "wokwi-pushbutton-6mm", "id": "btn2", "top": 122.6, "left": -182.4, "attrs": {} },
+    { "type": "wokwi-buzzer", "id": "bz1", "top": -45.6, "left": 126.6, "attrs": {} },
+    {
+      "type": "wokwi-pushbutton-6mm",
+      "id": "btn_init",
+      "top": 122.6,
+      "left": -67.2,
+      "attrs": { "color": "blue" }
+    }
   ],
   "connections": [
     [ "esp:TX", "$serialMonitor:RX", "", [] ],
@@ -51,7 +59,11 @@
     [ "btn1:1.l", "esp:GND.1", "black", [] ],
     [ "btn1:2.l", "esp:18", "green", [] ],
     [ "btn2:1.l", "esp:GND.1", "black", [] ],
-    [ "btn2:2.l", "esp:19", "green", [] ]
+    [ "btn2:2.l", "esp:19", "green", [] ],
+    [ "bz1:1", "esp:GND.1", "black", [] ],
+    [ "bz1:2", "esp:21", "purple", [] ],
+    [ "btn_init:1.l", "esp:GND.1", "black", [] ],
+    [ "btn_init:2.l", "esp:14", "green", [] ]
   ],
   "serialMonitor": { "display": "always" },
   "dependencies": {}
